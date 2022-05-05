@@ -1,5 +1,10 @@
 {
   "rules": {
     "jsx-a11y/anchor-is-valid": "off"
-  }
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2020
+  },
+  "extends": ["react-app", "react-app/jest"]
 }

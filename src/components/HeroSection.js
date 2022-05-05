@@ -1,6 +1,21 @@
-import * as React from "react"
+import * as React from "react";
+import { Nav } from "react-bootstrap";
+import { accountBalance, login, logout } from "../utils/near";
+import Wallet from "./wallet";
 
 const HeroSection = (props) => {
+  const account = window.walletConnection.account();
+  const [balance, setBalance] = React.useState("0");
+  const getBalance = React.useCallback(async () => {
+    if (account.accountId) {
+      setBalance(await accountBalance());
+    }
+  }, [account.accountId]);
+
+  React.useEffect(() => {
+    getBalance();
+  }, [getBalance]);
+
   return (
     <section id={props.fields.scroll_anchor_id} className="hero-section">
       <div className="container">
@@ -10,8 +25,35 @@ const HeroSection = (props) => {
               <h1>{props.fields.headline}</h1>
               <p>{props.fields.subheadline}</p>
 
-              <a href={props.fields.button_url} target="_blank" rel="noreferrer" className="main-btn btn-hover">{props.fields.button_label}</a>
-              <a href="https://buttercms.com/join/" target="_blank" rel="noreferrer">Need an account?</a>
+              <div style={{ display: "flex" }}>
+                {account.accountId ? (
+                  <h3>Welcome {account.accountId}!</h3>
+                ) : (
+                  <a
+                    style={{ cursor: "pointer" }}
+                    href={props.fields.button_url}
+                    rel="noreferrer"
+                    className="main-btn btn-hover"
+                    onClick={() => {
+                      login();
+                    }}
+                  >
+                    {props.fields.button_label}
+                  </a>
+                )}
+                {account.accountId && (
+                  <Nav style={{ marginLeft: "10px" }}>
+                    <Nav.Item>
+                      <Wallet
+                        address={account.accountId}
+                        amount={balance}
+                        symbol="NEAR"
+                        destroy={logout}
+                      />
+                    </Nav.Item>
+                  </Nav>
+                )}
+              </div>
             </div>
           </div>
           <div className="col-xxl-6 col-xl-6 col-lg-6">
@@ -22,7 +64,7 @@ const HeroSection = (props) => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-  export default HeroSection;
+export default HeroSection;
