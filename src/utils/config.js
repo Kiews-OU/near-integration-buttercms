@@ -1,4 +1,4 @@
-const CONTRACT_NAME = "blog.guram.testnet"; // line 1
+const CONTRACT_NAME = process.env.REACT_APP_CONTRACT_NAME;
 
 function environment(env) {
   switch (env) {
